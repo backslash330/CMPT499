@@ -1,0 +1,6 @@
+#lang racket
+; Question 1
+(define zero (lambda () 0))
+(define is-zero? (lambda (n) (zero? n)))
+(define successor (lambda (n) (+ n 1)))
+(define predecessor (lambda (n) (- n 1)))

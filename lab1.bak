@@ -1,0 +1,34 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname test) (read-case-sensitive #t) (teachpacks ((lib "convert.rkt" "teachpack" "htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "convert.rkt" "teachpack" "htdp")) #f)))
+; lab 1
+; remeber to call in brackets (Fahrenheit->Celsius 0)
+ (require htdp/convert)
+; question 1 option 1
+; (define Fahrenheit->Celsius (/ (- 0 32) 1.8))
+
+; question 1 option 2
+; call (convert-gui Fahrenheit->Celsius)
+(define (Fahrenheit->Celsius FahrenheitTemp)
+  (/ (- FahrenheitTemp 32) 1.8)
+)
+
+; question 2
+; call (convert-repl Fahrenheit->CelsiusLam)
+; (lambda (FahrenheitTemp) (/ (- FahrenheitTemp 32) 1.8))
+;(convert-repl (lambda (FahrenheitTemp) (/ (- FahrenheitTemp 32) 1.8)))
+
+; question 3
+; call (convert-repl Fahrenheit->CelsiusLam)
+(define f->c
+  (lambda (FahrenheitTemp) (/ (- FahrenheitTemp 32) 1.8))
+)
+
+
+; question 4
+(define (freezing FahrenheitTemp)
+  (if (<= (Fahrenheit->Celsius FahrenheitTemp) 0)
+      #T
+      #F)
+)
+  

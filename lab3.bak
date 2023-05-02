@@ -1,0 +1,3 @@
+#lang racket
+; lab 3
+(define bigBinaryTree '(a (large (unbalanced 1 2) 3) (binary 4 (tree 5 6))))
