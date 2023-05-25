@@ -1,0 +1,39 @@
+#lang racket
+; Assignmnet 3
+; Status Incomplete
+
+; Question 1
+
+; a
+
+; By definition the representation for one is (one) and zero is (diff (one) (one))
+; We assume that all integers from 0-n have a representation so we need to show n+1
+
+
+
+; Question 2
+;a)  See attached sheet
+; b) See attached sheet
+; c)
+(define (empty-stack)
+  (lambda (message)
+    (cond ((eq? message 'pop) (error "Stack underflow"))
+          ((eq? message 'peek) (error "Stack is empty"))
+          ((eq? message 'empty-stack?) #t)
+          (else (error "Invalid message")))))
+(define (push val stack)
+  (lambda (message)
+    (cond ((eq? message 'pop) (stack 'pop))
+          ((eq? message 'peek) (stack 'peek))
+          ((eq? message 'empty-stack?) (stack 'empty-stack?))
+          ((eq? message 'value) val)
+          (else (error "Invalid message")))))
+
+(define (pop stack)
+  ((stack 'pop)))
+
+(define (peek stack)
+  ((stack 'peek)))
+
+(define (empty-stack? stack)
+  ((stack 'empty-stack?)))

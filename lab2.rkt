@@ -26,7 +26,7 @@
     [(not (pair? lst)) 1]
     [(not (list? (car lst))) (+ 1  (DeepAtomCount (cdr lst)))] 
     [else 
-      (+ (DeepAtomCount (car lst)) (DeepAtomCount (cdr lst)))) 
+      (+ (DeepAtomCount (car lst)) (DeepAtomCount (cdr lst)))] 
     )
   )
 

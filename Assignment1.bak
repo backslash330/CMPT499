@@ -1,0 +1,53 @@
+#lang racket
+; Assignment 1
+; Status: Incomplete
+
+
+; Question 1
+; R-> R
+;  f(x) = x^3
+; R -> Z
+;  f(X) = ⌊x⌋
+; R-> N:
+;   f(x) = ⌊|x|⌋
+; N × Z -> Q
+;  f(n, z) = n/z
+
+; Question 2
+; Functional forms, also known as higher-order functions, are functions that can take a function as a paramter and can return a function.
+; This is done with lambda expressions in lambda calculus.
+
+; Referential Tranparency means that an execution of a function will not produce any side effects.
+; This means that when a value is passed in we would expect to always get the same result with nothing else happening we aren't aware of.
+; This means that the logic of a referential tranparent language should be clearly then one that is not (like an imperative language)
+
+
+; Question 3
+
+;(a) int FunctionA(int x) { return x*x; }
+; This function is referentially transparent because there are no hidden side effects.
+; The function takes in the integer x and multiples it with itself.
+; Therefore the returned value will always be the same and nothing changes.
+
+;(b) int FunctionB(int &x) { return abs(x); }
+; This function is not referntially transparent.
+; This is because the function uses a reference to x and is therefore dependent on x's current value
+; calling this function at different steps of the program can result in different results.
+
+
+;(c) int FunctionC(int &x, int &y) { return x = y = 42; }
+; This function is not referentially transparent.
+; Again this is because the function uses a reference to x and y.
+; This program is actually worse as it's result assigns a value to both x and y which means this function will almost always have a side effect.
+; (unless x and y are already 42)
+
+;(d) int *FunctionD(int &x) { return &x; }
+; This funciton is not referntially transparent.
+; This is because the function takes a pointer and returns a pointer to that input.
+; This means that if the memory address of x changes within the program, then two different call with the same variable can produce different results
+
+
+; Question 4
+; (DEFINE ( function name parameters)
+; body
+; )
