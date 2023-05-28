@@ -1,6 +1,6 @@
 #lang racket
 ; Lab 6
-; Status: Incomplete
+; Status: Complete
 ; Question 1
 ;(require (lib "eopl.ss" "eopl"))
 (require eopl)

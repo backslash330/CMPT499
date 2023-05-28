@@ -1,5 +1,5 @@
 ; Lab 7
-; Status Incomplete
+; Status Complete
 
 #lang racket
 (require eopl)

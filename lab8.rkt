@@ -13,26 +13,49 @@
  '((Prefix-list ("(" Prefix-exp ")") expression-list)
    (Prefix-exp (number) integer)
    (Prefix-exp ("-" Prefix-exp Prefix-exp ) statement)))
+
 ; Question 3
+(sllgen:make-define-datatypes lexical-spec grammar-spec)
 (sllgen:list-define-datatypes lexical-spec grammar-spec)
 
 
 ; Question 4
-(define list-the-datatypes
-(lambda ()
-(sllgen:list-define-datatypes lexical-spec grammar-spec)))
+;(define list-the-datatypes
+;(lambda ()
+;(sllgen:list-define-datatypes lexical-spec grammar-spec)))
 ; call listpt
-(list-the-datatypes)
+; (list-the-datatypes)
+
+(define just-scan
+(sllgen:make-string-scanner lexical-spec grammar-spec))
+(define scan&parse
+(sllgen:make-string-parser lexical-spec grammar-spec))
 ; Question 5
-(define (prefixEvaluator expr)
-  (cases Prefix-list expr
-    [(integer? n) n]
-    [(list '- e1 e2)
-     (- (prefixEvaluator e1)
-        (prefixEvaluator e2))]
-    [else (error "Invalid expression")]))
+;(define (prefixEvaluator expr)
+;  (cases Prefix-list expr
+;    [(integer? n) n]
+;    [(list '- e1 e2)
+;     (- (prefixEvaluator e1)
+;        (prefixEvaluator e2))]
+;    [else (error "Invalid expression")]))
+(define (prefixEvaluator prefixList)
+  (cond
+    [(number? prefixList) prefixList]
+    [(list? prefixList)
+     (cond
+       [(equal? (first prefixList) '-)
+        (- (prefixEvaluator (second prefixList))
+           (prefixEvaluator (third prefixList)))]
+       [else (error "Invalid prefix expression")])]
+    [else (error "Invalid prefix expression")]))
 
 ; Question 6
 ;(define read-eval-print
 ;(sllgen:make-rep-loop ">> " value-of--program
 ;(sllgen:make-stream-parser lexical-spec grammar-spec)))
+
+(define read-eval-print
+  (sllgen:make-rep-loop ">>"
+                        (lambda (input)
+                          (prefixEvaluator (scan&parse input)))
+                        (sllgen:make-stream-parser lexical-spec grammar-spec)))
