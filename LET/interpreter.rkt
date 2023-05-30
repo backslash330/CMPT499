@@ -53,7 +53,14 @@
 
     [ let-exp (var exp1 body)  
       (let ((val1 (value-of exp1 env)))
-        (value-of body (extend-env var val1 env) ) ) ]    
+        (value-of body (extend-env var val1 env) ) ) ]   
+
+    ; we add the case here
+    ;;;  [minus-exp (exp)
+    ;;;            (num-val
+    ;;;             (- 0 (expval->num num))
+    ;;;             )
+    ;;;             ]
 ) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

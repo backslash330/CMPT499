@@ -54,6 +54,7 @@
     [ expression
       ("let" identifier "=" expression "in" expression)
       let-exp ]    
+      ; syntax changes go here
 ) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

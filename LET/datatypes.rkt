@@ -24,6 +24,9 @@
     (value number?))
   (bool-val
     (boolean boolean?))
+    ; new data types go here
+    ;;; (list-val
+    ;;;  (lst list?))
 )
 
 ;;; extractors:
@@ -35,6 +38,7 @@
   (cases expval value
     [ bool-val (bool) bool ]
     [ num-val (num) num ]
+   ; [list-val (lst) (map expval->val lst)]
     [ else value ]
 ) )
 
@@ -52,3 +56,4 @@
     (else (error 'expval->bool "~a is not an Boolean!" (expval->val value)))
 ) )
 
+; ned data types need exttactor

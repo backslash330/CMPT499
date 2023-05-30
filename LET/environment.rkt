@@ -30,7 +30,7 @@
           (apply-env saved-env search-var))))
     (error 'apply-env "Expected an environment.")))  
 
-
+; for ribcage 
 ;;;;;;;;;;;;;;;;;;; initial environment ;;;;;;;;;;;;;;;;;;;
 
 ;; init-env : () -> Env
