@@ -24,6 +24,7 @@
   )
 )
 
+; convert ->number to zero = 0 then return true
 (define (is-zero? tree)
   (cond
     ; error checking
@@ -83,8 +84,8 @@
   (lambda (stack element)
     (lambda (message)
       (cond
-        ((eq? message 'pop) (stack))
-        ((eq? message 'peek) (element))
+        ((eq? message 'pop) stack)
+        ((eq? message 'peek) element)
         ((eq? message 'empty-stack?) #f)
         (else (error "Invalid stack operation"))))))
 
@@ -108,8 +109,12 @@
 ; Question 3
 (define empty-env
 (lambda ()
-(lambda (search-var)
-(report-no-binding-found search-var))))
+  ; need to construct a list
+  ; this is the car
+(list (lambda (search-var)
+(report-no-binding-found search-var))
+ (lambda () #t)) ))
+; the second 
 
 
 (define extend-env
@@ -120,6 +125,7 @@ saved-val
 (apply-env saved-env search-var)))))
 
 (define apply-env
+ ; car env search-var!
 (lambda (env search-var)
 (env search-var)))
 
@@ -128,6 +134,6 @@ saved-val
 (error "No binding for ~s" search-var)))
 
 (define (empty-env? env)
-  (eq? env empty-env)
+  ((cadr env))
 )
 
