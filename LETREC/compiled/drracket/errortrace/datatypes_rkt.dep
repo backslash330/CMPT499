@@ -1,0 +1,1 @@
+("8.8" ta6nt ("90198a24ca52fe78db81617e00bde629b6608705" . "c044345a6ac9fd664fa8ebff01f7d5eea4affd05") #"C:\\Users\\nalme\\Documents\\CMPT499_summer2023_NickAlmeida\\LETREC\\language.rkt" (collects #"drracket" #"private" #"drracket-errortrace-key.rkt") (collects #"eopl" #"main.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))

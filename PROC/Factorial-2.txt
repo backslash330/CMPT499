@@ -1,0 +1,18 @@
+let factorial = proc(n)
+  let makerec = proc (maker)
+                  proc (x)
+                      proc (y)
+                        if zero?(x)
+                        then 0
+                        else -((((maker maker) -(x,1))  y), -(0,y) )
+  in let times = proc (x) proc(y) (((makerec makerec) x) y)
+     in 
+        let makerec = proc (maker) 
+                        proc (x)
+                          if zero?(x)
+                          then 1
+                          else ((times ((maker maker) -(x,1))) x)
+        in ((makerec makerec) n)
+in
+  (factorial 5)        
+  

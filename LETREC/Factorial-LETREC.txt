@@ -1,0 +1,13 @@
+letrec factorial(n) =
+  letrec times(x) = 
+    proc(y)
+      if zero?(x)
+      then 0
+      else -( ((times -(x,1))  y), -(0,y))
+  in
+    if zero?(n)
+    then 1
+    else ((times n) (factorial -(n,1)))
+in 
+
+  (factorial 5)
