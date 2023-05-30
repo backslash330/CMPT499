@@ -1,6 +1,6 @@
 #lang racket
 ;lab 8
-; Status: Incomplete
+; Status: Complete
 (require eopl)
 ;Question 1
 (define lexical-spec 
@@ -10,7 +10,7 @@
 
 ; Question 2
 (define grammar-spec
- '((Prefix-list ("(" Prefix-exp ")") expression-list)
+ '((Prefix-exp ( "(" Prefix-exp ")") outerStatement)
    (Prefix-exp (number) integer)
    (Prefix-exp ("-" Prefix-exp Prefix-exp ) statement)))
 
@@ -20,42 +20,20 @@
 
 
 ; Question 4
-;(define list-the-datatypes
-;(lambda ()
-;(sllgen:list-define-datatypes lexical-spec grammar-spec)))
-; call listpt
-; (list-the-datatypes)
-
 (define just-scan
 (sllgen:make-string-scanner lexical-spec grammar-spec))
 (define scan&parse
 (sllgen:make-string-parser lexical-spec grammar-spec))
+
 ; Question 5
-;(define (prefixEvaluator expr)
-;  (cases Prefix-list expr
-;    [(integer? n) n]
-;    [(list '- e1 e2)
-;     (- (prefixEvaluator e1)
-;        (prefixEvaluator e2))]
-;    [else (error "Invalid expression")]))
-(define (prefixEvaluator prefixList)
-  (cond
-    [(number? prefixList) prefixList]
-    [(list? prefixList)
-     (cond
-       [(equal? (first prefixList) '-)
-        (- (prefixEvaluator (second prefixList))
-           (prefixEvaluator (third prefixList)))]
-       [else (error "Invalid prefix expression")])]
-    [else (error "Invalid prefix expression")]))
-
+(define (prefixEvaluator lst)
+  (cases Prefix-exp lst
+    (outerStatement (outerStatement5) (prefixEvaluator outerStatement5))
+    (integer (integer6) integer6)
+    (statement (statement7 statement8) (- (prefixEvaluator statement7) (prefixEvaluator statement8)))
+    )
+  )
 ; Question 6
-;(define read-eval-print
-;(sllgen:make-rep-loop ">> " value-of--program
-;(sllgen:make-stream-parser lexical-spec grammar-spec)))
-
 (define read-eval-print
-  (sllgen:make-rep-loop ">>"
-                        (lambda (input)
-                          (prefixEvaluator (scan&parse input)))
+  (sllgen:make-rep-loop ">>" prefixEvaluator
                         (sllgen:make-stream-parser lexical-spec grammar-spec)))

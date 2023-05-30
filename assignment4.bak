@@ -1,0 +1,29 @@
+(require eopl)
+
+; question 10
+(define-datatype lc-exp lc-exp?
+(var-exp
+(var identifier?))
+(lambda-exp
+(bound-var identifier?)
+(body lc-exp?))
+(app-exp
+(rator lc-exp?)
+(rand lc-exp?)))
+; write a parse expression function
+(define parse-exp
+(lambda (input)
+(parse (lc-exp) input)))
+; write a parse function
+(define parse
+(lambda (type input)
+(cond
+[(equal? type (lc-exp))
+(parse-lc-exp input)]
+[(equal? type (var-exp))
+(parse-var-exp input)]
+[(equal? type (lambda-exp))
+(parse-lambda-exp input)]
+[(equal? type (app-exp))
+(parse-app-exp input)]
+[else (error "Invalid type")])))
