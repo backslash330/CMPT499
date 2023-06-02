@@ -1,6 +1,6 @@
 #lang racket
 ; Assignmnet 3
-; Status Incomplete
+; Status Complete
 
 ; Question 1
 
@@ -29,7 +29,7 @@
   (cond
     ; error checking
     [(not (list? tree)) (error "is-zero?: argument must be a list, but is " tree)]
-    ((equal? tree '(diff (one) (one))) #t)
+    ((equal? (->number tree) 0) #t)
     (else #f)
   )
 )
@@ -47,14 +47,15 @@
 )
 
 (define ->number
-  (lambda n
+  ; If the n is not in brackets, the file will compile but will give CADR error
+  ; I am unsure why this is
+  (lambda (n)
       (if (eqv? (car n) 'one)
         1
         (- (->number (cadr n)) (->number (caddr n)))
       )
   )
 )
-
 ;c
 ; This works because we effectively do (a - (0-b)) = (a - (-b) = (a+b)
 (define diff-tree-plus
@@ -65,9 +66,6 @@
 ;a)  See attached sheet
 ; b) See attached sheet
 ; c)
-; I'm unsure why this one doesn't work. It follows the pattern of the textbook example but that doesn't work OOB either.
-; Define the constructors
-
 ; empty-stack: () -> Stack
 (define empty-stack
   (lambda ()
@@ -91,7 +89,7 @@
 
 ; Define the observers
 
-; pop: Stack -> Stack
+; pop: Stack -> Stack(
 (define pop
   (lambda (stack)
     (stack 'pop)))
@@ -119,21 +117,26 @@
 
 (define extend-env
 (lambda (saved-var saved-val saved-env)
-(lambda (search-var)
+  ; this needs to be a list or preds will fail!
+(list (lambda (search-var)
 (if (eqv? search-var saved-var)
 saved-val
-(apply-env saved-env search-var)))))
+(apply-env saved-env search-var)))
+(lambda ()
+            #f)
+)))
 
 (define apply-env
  ; car env search-var!
 (lambda (env search-var)
-(env search-var)))
+((car env) search-var)))
 
 (define report-no-binding-found
 (lambda (search-var)
 (error "No binding for ~s" search-var)))
 
+
 (define (empty-env? env)
-  ((cadr env))
+   ((cadr env))
 )
 

@@ -16,7 +16,7 @@
 ; Friday , SP date2 SP time SP GMT
 ; Friday , SP DIGIT DIGIT - month - DIGIT DIGIT SP time SP GMT
 ; Friday , SP 0 8 - Feb - 1 3 SP time SP GMT
-; Friday, 08-Feb-13 SP time SP GMT
+; Friday, SP 08-Feb-13 SP time SP GMT
 ; Friday, 08-Feb-13 09:00:00 GMT
 
 ;(b) Fri, 08 Feb 2013 09:00:00 GMT
@@ -29,7 +29,7 @@
 ; Fri , SP date1 SP time SP GMT
 ; Fri , SP DIGIT DIGIT SP month SP DIGIT DIGIT DIGIT DIGIT SP time SP GMT
 ; Fri , SP 0 8 SP Feb SP 2 0 1 3 SP time SP GMT
-; Fri, 08 Feb 2013 SP time SP GMT
+; Fri, SP 08 SP Feb SP 2013 SP time SP GMT
 ; Fri, 08 Feb 2013 09:00:00 GMT
 
 ;(c) Fri Feb 8 09:00:00 2013
@@ -42,9 +42,9 @@
 ; Fri SP date3 SP time SP DIGIT DIGIT DIGIT DIGIT
 ; Fri SP month SP DIGIT DIGIT SP time SP DIGIT DIGIT DIGIT DIGIT
 ; Fri SP Feb SP 8 SP time SP 2 0 1 3
-; Fri Feb 8 SP time SP 2 0 1 3
-; Fri Feb 8 09:00:00 SP 2 0 1 3
-; Fri Feb 8 09:00:00 2 0 1 3
+; Fri SP Feb SP 8 SP time SP 2013
+; Fri SP Feb SP 8 SP 09:00:00 SP 2013
+; Fri Feb 8 09:00:00 2013
 
 ; Question 3
 ;Theorem: Let e be a LcExp as defined by definition 1.1.8
@@ -119,14 +119,10 @@
     ; error check to ensure the data is correct
     [(not (list? bst)) (error "second argument must be a list, but is " bst)]
     [(not (number? n)) (error "first argument must be a number, but is " n)]
-    ; if the list is null, then we return #f
     [(null? bst) (error "path: No path can be found to " n)]
-    ; if the list is not null, then we check the first element of the list
-    ; if the first element is equal to n, then we return an empty list
+    ; if the first element of the list is the number we are looking for, then we return the empty list
     [(= (car bst) n) '()]
-    ; if the first element is not equal to n, then we check if the first element is greater than n
-    ; if the first element is greater than n, then we return a list with left and we call path on the left subtree
-    ; if the first element is less than n, then we return a list with right and we call path on the right subtree
+    ; if the first element of the list is not the number we are looking for, then we check if the number is greater than or less than the first element
     [else (if (> (car bst) n) (cons 'left (path n (cadr bst))) (cons 'right (path n (caddr bst))))]
   )
 )

@@ -44,29 +44,43 @@
     ;;; [ let-exp (var exp1 body)  
     ;;;   (let ((val1 (value-of exp1 env)))
     ;;;     (value-of body (extend-env var val1 env) ) ) ]   
-    ; change let expression to use list of vars 
-    [ let-exp (var-list exp-list body)  
-      (let ((val-list (map (lambda (exp) (value-of exp env)) exp-list)))
-        (value-of body (extend-env-list var-list env) ) ) ]
+    ; add arbitary let
+      (let*-exp (vars exprs body)
+        (let ((vals (map (lambda (expr) (value-of expr env)) exprs)))
+          (value-of body (extend-env* vars vals env))))
           
-    [ proc-exp (var body)
-      (proc-val (procedure var body env)) ]
+    ;;; [ proc-exp (var body)
+    ;;;   (proc-val (procedure var body env)) ]
+    [ proc-exp (vars body)
+      (proc-val (procedure vars body env)) ]
     
-    [ call-exp (rator rand)
-      (apply-procedure 
-        (expval->proc (value-of rator env)) 
-        (value-of rand env)) ]
+    ;;; [ call-exp (rator rand)
+    ;;;   (apply-procedure 
+    ;;;     (expval->proc (value-of rator env)) 
+    ;;;     (value-of rand env)) ]
+
+    [ call-exp (rator rands) 
+      (let ([proc (expval->proc (value-of rator env))]
+        [args (map (lambda (rand)(value-of rand  env)) rands)])
+            (apply-procedure proc args))]
         
-    [ letrec-exp (p-name b-var p-body letrec-body)
-      (value-of letrec-body
-        (extend-env-rec p-name b-var p-body env)) ]
+    [ letrec-exp (p-names b-vars p-bodies letrec-body) (value-of letrec-body
+                                                                  (extend-env-rec p-names b-vars p-bodies env)) ]
 ) )
 
 ;; apply-procedure : Proc * ExpVal -> ExpVal
-(define (apply-procedure proc1 arg)
+(define (apply-procedure proc1 args) ; changed to args
   (cases proc proc1
-    [ procedure (var body saved-env)
-      (value-of body (extend-env var arg saved-env)) ]
+    ; we need to change apply-procedure to handle arbitary number of arguments
+    ;;; [ procedure (vars body saved-env)
+    ;;;   (value-of body (extend-env var arg saved-env)) ]
+    [ procedure (vars body saved-env)
+      (let loop ([env saved-env] [vars vars] [args args])
+        (if (null? vars)
+            (value-of body env)
+            (loop (extend-env (car vars) (car args) env)
+                  (cdr vars)
+                  (cdr args)))) ]
 ) )
 
 

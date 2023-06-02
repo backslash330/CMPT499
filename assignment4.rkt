@@ -1,25 +1,75 @@
 #lang racket
 (require eopl)
+; Assignment 4
+; Status: Incomplete
+
+
+; Question 1, see attached sheet.
+
 
 ; question 2
 ; ask about why var-exp fails in the original code
-;(define (parse-expression datum)
-;  (with-handlers ([exn:fail? (lambda (exn)
-;                               (raise-arguments-error
-;                                'parse-expression
-;                                "Invalid LcExp"
-;                                "LcExp" datum))])
-;    (cond
-;      [(symbol? datum) (var-exp datum)]
-;      [(and (list? datum) (eqv? (car datum) 'lambda))
-;       (lambda-exp (caadr datum)
-;                   (parse-expression (caddr datum)))]
-;      [(list? datum)
-;       (app-exp (parse-expression (car datum))
-;                (parse-expression (cadr datum)))])))
+; textbook example fails
+;;; (define parse-expressiontextbook
+;;; (lambda (datum)
+;;; (cond
+;;; ((symbol? datum) (var-exp datum))
+;;; ((pair? datum)
+;;; (if (eqv? (car datum) ’lambda)
+;;; (lambda-exp
+;;; (car (cadr datum))
+;;; (parse-expression (caddr datum)))
+;;; (app-exp
+;;; (parse-expression (car datum))
+;;; (parse-expression (cadr datum)))))
+;;; (else (report-invalid-concrete-syntax datum)))))
+
+
+;;; ; assignment example fails
+;;; (define (parse-expression datum )
+;;;  (cond
+;;;  ; Variable Expression (var-exp)
+;;;  [ (symbol? datum)
+;;;  (var-exp datum)]
+
+;;;  ; Lambda Expression (lambda-exp)
+;;;  [ (and (list? datum) (eqv? (car datum) 'lambda))
+;;;  (lambda-exp
+;;;  (caadr datum)
+;;;  (parse-expression (caddr datum))) ]
+
+;;;  ; App Expression (app-exp)
+;;;  [ (list? datum)
+;;;  (app-exp
+;;;  (parse-expression (car datum))
+;;;  (parse-expression (cadr datum)))]
+
+;;;  ; Invaid Expression
+;;;  [ else (raise-arguments-error
+;;;  'parse-expression
+;;;  "Invalid LcExp"
+;;;  "LcExp" datum) ] ) )
+
+;;; (define (parse-expression2 datum)
+;;;   (with-handlers ([exn:fail? (lambda (exn)
+;;;                                (raise-arguments-error
+;;;                                 'parse-expression
+;;;                                 "Invalid LcExp"
+;;;                                 "LcExp" datum))])
+;;;     (cond
+;;;       [(symbol? datum) (var-exp datum)]
+;;;       [(and (list? datum) (eqv? (car datum) 'lambda))
+;;;        (lambda-exp (caadr datum)
+;;;                    (parse-expression (caddr datum)))]
+;;;       [(list? datum)
+;;;        (app-exp (parse-expression (car datum))
+;;;                 (parse-expression (cadr datum)))])))
+
+
+;Question 3a
+; see attached sheet
 
 ; Question 3b
-; needs error checking
 
 (define-datatype prefix-exp prefix-exp?
   (const-exp (num integer?))
@@ -36,8 +86,14 @@
                   (cadr right-ret))))
         (list (const-exp (car lst))
               (cdr lst))))
-  (car (parse-rec lst)))
-
+  ;(car (parse-rec lst)))
+  ; rewrite to have error checking
+  (cond 
+    ((null? lst) (raise-arguments-error 'parse-prefix-exp "Empty List" "List" lst))
+    ((not (list? lst)) (raise-arguments-error 'parse-prefix-exp "Not a List" "List" lst))
+    (else (car (parse-rec lst)))
+  )
+)
 ; Question 3c
 ; why am I getting an extra list layer here?
 (define (unparse-prefix-exp exp)

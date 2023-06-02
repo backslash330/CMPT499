@@ -42,22 +42,31 @@
     ;;;   ("let" identifier "=" expression "in" expression)
     ;;;   let-exp ]    
 
-    ; change let to take an arbitrary number of bindings
-    [ expression ("let"(arbno identifier "=" expression) "in" expression) let-exp ]    
+    ;;; [ expression
+    ;;;   ("proc" "(" identifier ")" expression)
+    ;;;   proc-exp ]   
 
-    [ expression
-      ("proc" "(" identifier ")" expression)
-      proc-exp ]   
+    [expression ("proc" "(" (separated-list identifier ",") ")" expression) proc-exp]
 
+    ;;; [ expression
+    ;;;   ("(" expression expression ")")
+    ;;;   call-exp ]
+
+    ; we want to use an arbitrary number of arguments
     [ expression
-      ("(" expression expression ")")
+      ("(" expression (arbno expression) ")")
       call-exp ]
+
 
     [ expression
       ("letrec"
-       identifier "(" identifier ")" "=" expression
-        "in" expression)
-      letrec-exp ]
+       (arbno identifier "(" (separated-list identifier ",") ")" "=" expression) "in" expression)
+                letrec-exp ]
+
+    ; allow for an arbitary number of variables
+    ;Expression ::= let {Identifier = Expression}∗ in Expression
+    [ expression
+      ("let"(arbno identifier "=" expression) "in" expression) let*-exp ]
  
   ))
 

@@ -1,17 +1,17 @@
 #lang racket
 ; Assignment 1
-; Status: Incomplete
+; Status: Complete
 
 
 ; Question 1
 ; R-> R
 ;  f(x) = x^3
-; R -> Z
-;  f(X) = ⌊x⌋
 ; R-> N:
 ;   f(x) = ⌊|x|⌋
+; R -> Z
+;  f(X) = ⌊x⌋
 ; N × Z -> Q
-;  f(n, z) = n/z
+;  f(n, z) = z/n
 
 ; Question 2
 ; Functional forms, also known as higher-order functions, are functions that can take a function as a paramter and can return a function.
@@ -70,17 +70,17 @@
 ;
 (define (Question-5b)
 (cons 'A
-      (cons (cons 'B
-                  (cons 'C
-                        (cons (cons 'D
-                                    (cons 'E '()))
-                              (cons (cons 'F '())
-                                    '()))))
+  (cons (cons 'B
+    (cons 'C
+      (cons (cons 'D
+        (cons 'E '()))
+         -(cons (cons 'F '())
+              '()))))
             (cons (cons (cons 'G
-                              (cons 'H '()))
-                        '())
-                  (cons (cons 'I '())
-                        '())))
+                (cons 'H '()))
+                  '())
+                    (cons (cons 'I '())
+                      '())))
 )
 )
 

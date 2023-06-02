@@ -50,10 +50,10 @@
         (if (expval->bool val1)      
           (value-of exp2 env)
           (value-of exp3 env) ) ) ]
-
-    [ let-exp (var exp1 body)  
-      (let ((val1 (value-of exp1 env)))
-        (value-of body (extend-env var val1 env) ) ) ]   
+; commented out the old let expression
+    ;;; [ let-exp (var exp1 body)  
+    ;;;   (let ((val1 (value-of exp1 env)))
+    ;;;     (value-of body (extend-env var val1 env) ) ) ]   
 
     ; we add the case here
     ;;;  [minus-exp (exp)
@@ -61,6 +61,88 @@
     ;;;             (- 0 (expval->num num))
     ;;;             )
     ;;;             ]
+    [minus-exp (exp)
+               (num-val
+                (- 0 (expval->num (value-of exp env)))
+                )
+               ]
+
+    [plus-exp (exp1 exp2)
+              (num-val
+               (+ (expval->num (value-of exp1 env))
+                  (expval->num (value-of exp2 env)))
+               )
+              ]
+
+    [mult-exp (exp1 exp2)
+              (num-val
+               (* (expval->num (value-of exp1 env))
+                  (expval->num (value-of exp2 env)))
+               )
+              ]
+
+    [div-exp (exp1 exp2)
+              (num-val
+                (/ (expval->num (value-of exp1 env))
+                  (expval->num (value-of exp2 env)))
+                )
+              ]
+    ; Question 2c
+    ;;; [cons-exp (exp1 exp2)
+    ;;;           (cons-val
+    ;;;                  (value-of exp1 env)
+    ;;;                   (value-of exp2 env)
+    ;;;             )
+    ;;;           ]
+    ;;; [car-exp (exp)
+    ;;;          (expval->car
+    ;;;            (value-of exp env)
+    ;;;           )
+    ;;;          ]
+    ;;; [cdr-exp (exp)
+    ;;;           (expval->cdr
+    ;;;             (value-of exp env)
+    ;;;             )
+    ;;;           ]
+    ;;; [null?-exp (exp)
+    ;;;            ( bool-val
+    ;;;             (expval->empty? (value-of exp env))
+    ;;;             )
+    ;;;            ]
+          (cons-exp (exp1 exp2)
+        (let ((val1 (value-of exp1 env))
+              (val2 (value-of exp2 env)))
+          (cons-val val1 val2)))
+      (car-exp (exp1)
+        (let ((val1 (value-of exp1 env)))
+          (expval->car val1)))
+      (cdr-exp (exp1)
+        (let ((val1 (value-of exp1 env)))
+          (expval->cdr val1)))
+      (null?-exp (exp1)
+        (let ((val1 (value-of exp1 env)))
+          (let ((bool1 (expval->emptylist? val1)))
+            (bool-val bool1))))
+    ;;; [emptylist-exp ()
+    ;;;                 (empty-val)
+    ;;;                 ]
+    
+    ;;; ;Question 2c add the list
+    ;;; [list-exp (expressions)
+    ;;;           ; we need to get the value of each expression, so we use map
+    ;;;           (list-value
+    ;;;            (map (lambda (exp) (value-of exp env)) expressions)
+    ;;;            )
+    ;;;           ]
+  (emptylist-exp ()
+        (emptylist-val))
+      (list-exp (exprs)
+        (list-val (map (lambda (expr) (value-of expr env)) exprs)))
+
+  (let*-exp (vars exprs body)
+        (let ((vals (map (lambda (expr) (value-of expr env)) exprs)))
+          (value-of body (extend-env* vars vals env))))
+
 ) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

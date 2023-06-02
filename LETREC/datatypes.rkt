@@ -55,11 +55,14 @@
 ;; procedure : Var * Exp * Env -> Proc
 (define-datatype proc proc?
   (procedure
-    (bvar symbol?)
-    (body expression?)
-    (env environment?)))
+    (bvars (list-of symbol?))
+    (body  expression?)
+    (env environment?)
+))
 
 ;; Page: 86
+; this is a reference representation of a environment
+; we need to create a rib structure to represent the environment
 (define-datatype environment environment?
   (empty-env)
   (extend-env 
@@ -67,13 +70,11 @@
     (saved-val  expval?)
     (saved-env  environment?))
   (extend-env-rec
-    (proc-name  symbol?)
-    (bound-var  symbol?)
-    (proc-body  expression?)
+    (proc-name  (list-of symbol?))
+    (bound-var  (list-of (list-of symbol?)))
+    (proc-body  (list-of expression?))
     (env        environment?))
-  ; add list variant
-  (extend-env-list
-    (saved-var  (listof symbol?))
-    (saved-val  (listof expval?))
-    (saved-env  environment?))
 )
+
+;  represent the empty environment by the empty list, and  a non-empty environment is represented as a list of
+; pairs called ribs; each left rib is a list of variables and each right rib is the corresponding list of values

@@ -24,9 +24,12 @@
     (value number?))
   (bool-val
     (boolean boolean?))
-    ; new data types go here
-    ;;; (list-val
-    ;;;  (lst list?))
+  ; create a new datatype for lists, so we need an empty and a cons
+  (emptylist-val )
+  (cons-val
+    (first expval?)
+    (rest expval?))
+  
 )
 
 ;;; extractors:
@@ -56,4 +59,31 @@
     (else (error 'expval->bool "~a is not an Boolean!" (expval->val value)))
 ) )
 
-; ned data types need exttactor
+; new data types need exttactor
+; expval->car : ExpVal -> ExpVal
+(define (expval->car value)
+  (cases expval value
+    (cons-val (first rest) first)
+    (else (error 'expval->car "~a is not a list!" (expval->val value)))
+) )
+
+; expval->cdr : ExpVal -> ExpVal
+(define (expval->cdr value)
+  (cases expval value
+    (cons-val (first rest) rest)
+    (else (error 'expval->cdr "~a is not a list!" (expval->val value)))
+) )
+
+; expval->empty? : ExpVal -> Boolean
+(define (expval->emptylist? value)
+  (cases expval value
+    (emptylist-val () #t)
+    (cons-val (first rest) #f)
+    (else (error 'expval->empty? "~a is not a list!" (expval->val value)))
+) )
+; expval->list : ExpVal -> List
+(define list-val
+  (lambda (elements)
+    (if (null? elements)
+        (emptylist-val)
+        (cons-val (car elements) (list-val (cdr elements))))))

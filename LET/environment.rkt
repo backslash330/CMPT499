@@ -29,6 +29,11 @@
           saved-val
           (apply-env saved-env search-var))))
     (error 'apply-env "Expected an environment.")))  
+; we need to add extend-env* for lists of variables
+(define (extend-env* vars vals env)
+  (if (null? vars)
+    env
+    (extend-env (car vars) (car vals) (extend-env* (cdr vars) (cdr vals) env))))
 
 ; for ribcage 
 ;;;;;;;;;;;;;;;;;;; initial environment ;;;;;;;;;;;;;;;;;;;
