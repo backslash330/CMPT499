@@ -8,71 +8,111 @@
 
 
 ; question 2
-; ask about why var-exp fails in the original code
-; textbook example fails
-;;; (define parse-expressiontextbook
-;;; (lambda (datum)
-;;; (cond
-;;; ((symbol? datum) (var-exp datum))
-;;; ((pair? datum)
-;;; (if (eqv? (car datum) ’lambda)
-;;; (lambda-exp
-;;; (car (cadr datum))
-;;; (parse-expression (caddr datum)))
-;;; (app-exp
-;;; (parse-expression (car datum))
-;;; (parse-expression (cadr datum)))))
-;;; (else (report-invalid-concrete-syntax datum)))))
+
+; example from class:
+;;; 1(define (parse-expression datum )
+;;; 2 (cond
+;;; 3 ; Variable Expression (var-exp)
+;;; 4 [ (symbol? datum)
+;;; 5 (var-exp datum)]
+;;; 6
+;;; 7 ; Lambda Expression (lambda-exp)
+;;; 8 [ (and (list? datum) (eqv? (car datum) 'lambda))
+;;; 9 (lambda-exp
+;;; 10 (caadr datum)
+;;; 11 (parse-expression (caddr datum))) ]
+;;; 12
+;;; 13 ; App Expression (app-exp)
+;;; 14 [ (list? datum)
+;;; 15 (app-exp
+;;; 16 (parse-expression (car datum))
+;;; 17 (parse-expression (cadr datum)))]
+;;; 18
+;;; 19 ; Invaid Expression
+;;; 20 [ else (raise-arguments-error
+;;; 21 'parse-expression
+;;; 22 "Invalid LcExp"
+;;; 23 "LcExp" datum) ] ) )
+;;; Modify parse-expression so that it is robust, accepting any s-expression
+;;; and issuing an appropriate error message if the input does not represent
+;;; a valid lambda-calculus expression. For full marks, your implementation
+;;; must report the error and reference the original s-expression passed into
+;;; your function. Again, assume the datatype lc-exp on page 46 of the
+;;; textbook. Hint: Look into the (with-handlers ...) procedure
+(define-datatype lc-exp lc-exp?
+(var-exp
+(var identifier?))
+(lambda-exp
+(bound-var identifier?)
+(body lc-exp?))
+(app-exp
+(rator lc-exp?)
+(rand lc-exp?)))
 
 
-;;; ; assignment example fails
-;;; (define (parse-expression datum )
-;;;  (cond
-;;;  ; Variable Expression (var-exp)
-;;;  [ (symbol? datum)
-;;;  (var-exp datum)]
+;;; (define (parse-expression datum)
+;;; ; we want to make a lec rec or helper function 
+;;; ; that does what we want and has 
+;;; ; with handlers return expression
 
-;;;  ; Lambda Expression (lambda-exp)
-;;;  [ (and (list? datum) (eqv? (car datum) 'lambda))
-;;;  (lambda-exp
-;;;  (caadr datum)
-;;;  (parse-expression (caddr datum))) ]
+;;;   (with-handlers ([exn:fail? (lambda (exn)
+;;;                                (raise-arguments-error
+;;;                                 'parse-expression
+;;;                                 "Invalid LcExp"
+;;;                                 "LcExp" datum))])
 
-;;;  ; App Expression (app-exp)
-;;;  [ (list? datum)
-;;;  (app-exp
-;;;  (parse-expression (car datum))
-;;;  (parse-expression (cadr datum)))]
+;;;     ; call helper function with datum, with-handlers will catch issue 
 
-;;;  ; Invaid Expression
-;;;  [ else (raise-arguments-error
-;;;  'parse-expression
-;;;  "Invalid LcExp"
-;;;  "LcExp" datum) ] ) )
+;;;     ; this goes in a helper function with more robust error checking
+;;;     (cond
+;;;       [(symbol? datum) (var-exp datum)]
+;;;       [(and (list? datum) (eqv? (car datum) 'lambda))
+;;;        (lambda-exp (caadr datum)
+;;;                    (parse-expression (caddr datum)))]
+;;;       [(list? datum)
+;;;        (app-exp (parse-expression (car datum))
+;;;                 (parse-expression (cadr datum)))])))
 
-;(define (parse-expression2 datum)
-; we want to make a lec rec or helper function 
-; that does what we want and has 
-; with handlers return expression
 
-;  (with-handlers ([exn:fail? (lambda (exn)
-;                               (raise-arguments-error
-;                                'parse-expression
-;                                "Invalid LcExp"
-;                                "LcExp" datum))])
+(define (parse-expression datum)
+  (with-handlers ([exn:fail? (lambda (exn)
+                               (raise-arguments-error
+                                'parse-expression
+                                "Invalid LcExp"
+                                "LcExp" datum))])
+    (parse-expression-helper datum)
+    )
+  )
 
-    ; call helper function with datum, with-handlers will catch issue 
+(define (parse-expression-helper datum)
+  (cond
+    [(symbol? datum) (var-exp datum)]
+    ;;; [(and (list? datum) (eqv? (car datum) 'lambda))
+    ;;;  (lambda-exp (caadr datum)
+    ;;;              (parse-expression (caddr datum)))]
+    ;;; [(list? datum)
+    ;;;  (app-exp (parse-expression (car datum))
+    ;;;           (parse-expression (cadr datum)))]))
+    ; if the datum is a pair, then we need to check if it is a lambda or app as above
+    ; otherwise it is an error
+    [(pair? datum) (cond
+                    [(eqv? (car datum) 'lambda) (lambda-exp (caadr datum)
+                                                            (parse-expression-helper (caddr datum)))]
+                    [else (app-exp (parse-expression (car datum))
+                                           (parse-expression (cadr datum)))])
+    ]
+    [else (raise-arguments-error
+           'parse-expression
+           "Invalid LcExp"
+           "LcExp" datum)]
+    )
+  )
 
-    ; this goes in a helper function with more robust error checking
+; test cases
+; (parse-expression 'x)
+; (parse-expression '(lambda (x) x))
+; (parse-expression '(lambda (x) (lambda (y) x)))
 
- ;   (cond
- ;     [(symbol? datum) (var-exp datum)]
- ;     [(and (list? datum) (eqv? (car datum) 'lambda))
- ;      (lambda-exp (caadr datum)
- ;                  (parse-expression (caddr datum)))]
- ;     [(list? datum)
- ;      (app-exp (parse-expression (car datum))
- ;               (parse-expression (cadr datum)))])))
 
 
 ;Question 3a

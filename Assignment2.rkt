@@ -1,6 +1,6 @@
 #lang racket
 ; Assignment 2
-; Status: Incomplete
+; Status: Complete
 
 ; Question 1
 ; See attached file
