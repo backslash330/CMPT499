@@ -3,19 +3,30 @@
 
 ; To do
 ; finish Assignment 2 Question 1
-
-
+; review assignment 5
+; (translation-of-program (scan&parse "let x = 5 y=3 in -(x,y)"))
 ; Assignment 2 Question7
-; If I run the code, there is an issue with the given example. 
-; It appears there is an extra bracket, confirm with ben
+; typo
+
 
 ; assignment 4 question 2
-; var-exp fails in the original code given, is this by design?
-; do i need to define var-exp and the rest of the functions in the code?
+; see assignment notes, needs recheck.
 
 ; Assignment 4 Question 3c
 ; Ask about why I am getting an extra layer of brackets
+;
+;;; (define (unparse-prefix-exp exp)
+;;;   (cases prefix-exp exp
+;;;     (const-exp (num) num)
+;;;     (diff-exp (operand1 operand2)
+;;;               (list (unparse-prefix-exp operand1) '- (unparse-prefix-exp operand2)) )
+;;;     )
+;;;   )
+
 
 ; Ask about lab 10, question 1. Don't understand what to do
 ; also stuck on assignment 6 question 1
+; wwwwwwwwwwwe need to chanfge the grammer 
+; then we need to change the translater so that it is nameless 
+; then we change the interp so that it is nameless
 

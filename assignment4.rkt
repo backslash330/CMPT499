@@ -50,20 +50,29 @@
 ;;;  "Invalid LcExp"
 ;;;  "LcExp" datum) ] ) )
 
-;;; (define (parse-expression2 datum)
-;;;   (with-handlers ([exn:fail? (lambda (exn)
-;;;                                (raise-arguments-error
-;;;                                 'parse-expression
-;;;                                 "Invalid LcExp"
-;;;                                 "LcExp" datum))])
-;;;     (cond
-;;;       [(symbol? datum) (var-exp datum)]
-;;;       [(and (list? datum) (eqv? (car datum) 'lambda))
-;;;        (lambda-exp (caadr datum)
-;;;                    (parse-expression (caddr datum)))]
-;;;       [(list? datum)
-;;;        (app-exp (parse-expression (car datum))
-;;;                 (parse-expression (cadr datum)))])))
+;(define (parse-expression2 datum)
+; we want to make a lec rec or helper function 
+; that does what we want and has 
+; with handlers return expression
+
+;  (with-handlers ([exn:fail? (lambda (exn)
+;                               (raise-arguments-error
+;                                'parse-expression
+;                                "Invalid LcExp"
+;                                "LcExp" datum))])
+
+    ; call helper function with datum, with-handlers will catch issue 
+
+    ; this goes in a helper function with more robust error checking
+
+ ;   (cond
+ ;     [(symbol? datum) (var-exp datum)]
+ ;     [(and (list? datum) (eqv? (car datum) 'lambda))
+ ;      (lambda-exp (caadr datum)
+ ;                  (parse-expression (caddr datum)))]
+ ;     [(list? datum)
+ ;      (app-exp (parse-expression (car datum))
+ ;               (parse-expression (cadr datum)))])))
 
 
 ;Question 3a
@@ -98,9 +107,9 @@
 ; why am I getting an extra list layer here?
 (define (unparse-prefix-exp exp)
   (cases prefix-exp exp
-    (const-exp (num) (list num))
+    (const-exp (num) num)
     (diff-exp (operand1 operand2)
-              (list (append (unparse-prefix-exp operand1) '(-) (unparse-prefix-exp operand2)) ))
+              (list (unparse-prefix-exp operand1) '- (unparse-prefix-exp operand2)) )
     )
   )
 

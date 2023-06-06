@@ -43,7 +43,8 @@
       (nameless-proc-exp (translation-of body (extend-senv var senv))) ]
 
     [ var-exp (var) (nameless-var-exp (apply-senv senv var)) ]
-    
+    ; need to change what let exp does
+    ; ; named exp is  now a list
     [ let-exp (var named-exp1 body) 
       (nameless-let-exp
          (translation-of named-exp1 senv) 
