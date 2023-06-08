@@ -3,8 +3,8 @@
 ;# the LET interpreter                                    #
 ;# ====================================================== #
 ;# CMPT 340: Assignment 5                                 #
-;# YOUR NAME                                              #
-;# ID NUMBER                                              #
+;# Nicholas Almeida                                       #
+;# ID NUMBER: 200385                                      #
 ;##########################################################
 
 #lang racket

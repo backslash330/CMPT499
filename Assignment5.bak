@@ -1,0 +1,42 @@
+; Assignment 9
+; Status: Incomplete
+; use lab 8 as a reference
+#lang racket
+(require eopl)
+; Question 1
+
+;;; Arith-expr ::= Arith-term {Additive-op Arith-term}∗
+;;; Arith-term ::= Arith-factor {Multiplicative-op Arith-factor}∗
+;;; Arith-factor ::= Integer
+;;; Arith-factor ::= ( Arith-expr )
+;;; Additive-op ::= + | -
+;;; Multiplicative-op ::= * | /
+
+
+
+;;; Write a lexical specification and a grammar in SLLGEN1
+;;; to scan and
+;;; parse strings according to the grammar. Using your specifications,
+;;; create a function to scan and parse a string representation of an
+;;; arithmetic expression into an AST.
+(define lexical-spec
+  '((whitespace (whitespace) skip)
+    (integer (digit) (cons 'integer (string->number lexeme)))
+    (additive-op (or "+" "-") (cons 'additive-op lexeme))
+    (multiplicative-op (or "*" "/") (cons 'multiplicative-op lexeme))
+    )
+)
+
+(define the-grammer
+  '((Arith-expr (Arith-term (arbno additive-op Arith-term)) arithmetic-expression)
+    (Arith-term (Arith-factor (arbno multiplicative-op Arith-factor)) arithmetic-term)
+    (Arith-factor (integer) integer)
+    (Arith-factor ("(" Arith-expr ")") arithmetic-factor)
+    )
+)
+
+(sllgen:make-define-datatypes lexical-spec the-grammer)
+
+(define scan&parse
+  (sllgen:make-string-parser lexical-spec the-grammer))
+

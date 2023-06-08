@@ -1,7 +1,7 @@
 #lang racket
 (require eopl)
 ; Assignment 4
-; Status: Incomplete
+; Status: Complete
 
 
 ; Question 1, see attached sheet.
@@ -41,9 +41,9 @@
 ;;; textbook. Hint: Look into the (with-handlers ...) procedure
 (define-datatype lc-exp lc-exp?
 (var-exp
-(var identifier?))
+(var symbol?))
 (lambda-exp
-(bound-var identifier?)
+(bound-var symbol?)
 (body lc-exp?))
 (app-exp
 (rator lc-exp?)
@@ -95,12 +95,20 @@
     ;;;           (parse-expression (cadr datum)))]))
     ; if the datum is a pair, then we need to check if it is a lambda or app as above
     ; otherwise it is an error
-    [(pair? datum) (cond
-                    [(eqv? (car datum) 'lambda) (lambda-exp (caadr datum)
-                                                            (parse-expression-helper (caddr datum)))]
-                    [else (app-exp (parse-expression (car datum))
-                                           (parse-expression (cadr datum)))])
-    ]
+    ;;; [(pair? datum) (cond
+                    ;;; [(eqv? (car datum) 'lambda) (lambda-exp (caadr datum)
+                    ;;;                                         (parse-expression-helper (caddr datum)))]
+                    ;;; [else (app-exp (parse-expression (car datum))
+                    ;;;                        (parse-expression (cadr datum)))])
+                    ; we need to be more robust here, just because the car is a lambda does not mean it is a valid lambda
+    ;;; ]
+[(and (list? datum) (eqv? (car datum) 'lambda) (= (length datum) 3) (symbol? (caadr datum))) 
+(lambda-exp (caadr datum) (parse-expression (caddr datum)))]     ; just because the car is a lambda does not mean it is a valid lambda, we need to check the cdr
+    ; we also need a case for the app-exp
+    ; the class example is too narrow. 
+    ; we need to see if it is a list and if it is length 2
+  [(and (list? datum) (= (length datum) 2)) (app-exp (parse-expression (car datum))
+                                                     (parse-expression (cadr datum)))]
     [else (raise-arguments-error
            'parse-expression
            "Invalid LcExp"
@@ -109,9 +117,19 @@
   )
 
 ; test cases
-; (parse-expression 'x)
-; (parse-expression '(lambda (x) x))
-; (parse-expression '(lambda (x) (lambda (y) x)))
+; (parse-expression 'x) -> (var-exp 'x)
+; (parse-expression '(lambda (x) x)) -> (lambda-exp 'x (var-exp 'x))
+; (parse-expression '(lambda (x) (lambda (y) x))) -> (lambda-exp 'x (lambda-exp 'y (var-exp 'x)))
+; more complex test cases
+; (parse-expression '(lambda (x) (lambda (y) (x y))))  -> (lambda-exp 'x (lambda-exp 'y (app-exp (var-exp 'x) (var-exp 'y))))
+; (parse-expression '(lambda (x) (lambda (y) (x y z))))  -> this should fail because z is not a valid lambda expression
+; (parse-expression '(lambda (x) (lambda (y) (x y) z)))  -> this should fail because z is not a valid lambda expression
+; test cases that should raise errors
+; (parse-expression '(lambda (x) (lambda (y) (x y z)))) ; this should fail because z is not a valid lambda expression
+; (parse-expression '(lambda (x) (lambda (y) (x y) z) w)) ; this should fail because w is not a valid lambda expression
+; (parse-expression '(lambda (x) (lambda (y) (x y) z) (w)))
+; I need a test case that fails multiple levels deep to confirm that the error is being raised correctly
+; (parse-expression '(lambda (x) (lambda (y) (x y) z) (w (x y) z)))
 
 
 

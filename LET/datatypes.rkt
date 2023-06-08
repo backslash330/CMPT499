@@ -3,8 +3,8 @@
 ;# the LET interpreter                                    #
 ;# ====================================================== #
 ;# CMPT 340: Assignment 5                                 #
-;# YOUR NAME                                              #
-;# ID NUMBER                                              #
+;# Nicholas Almeida                                       #
+;# ID NUMBER: 200385                                      #
 ;##########################################################
 
 #lang racket
@@ -25,7 +25,7 @@
   (bool-val
     (boolean boolean?))
   ; create a new datatype for lists, so we need an empty and a cons
-  (emptylist-val )
+  (emptylist-val)
   (cons-val
     (first expval?)
     (rest expval?))

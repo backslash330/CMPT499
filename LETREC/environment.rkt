@@ -7,43 +7,34 @@
 
 ;;;;;;;;;;;;;;;; environment constructors and observers ;;;;;;;;;;;;;;;;
 
-;; Page: 86
-;this is a reference representation of a environment, we need to replace it with a ribcage representation
-;;; (define (apply-env env search-var)
-;;;   (cases environment env
-;;;     [ empty-env ()
-;;;       (error 'apply-env "No binding for ~s" search-var) ]
-;;;     [ extend-env (var val saved-env)
-;;;       (if (eqv? search-var var)
-;;;         val
-;;;         (apply-env saved-env search-var) ) ]
-;;;     [ extend-env-rec (p-name b-var p-body saved-env)
-;;;         (if (eqv? search-var p-name)
-;;;           (proc-val (procedure b-var p-body env))
-;;;           (apply-env saved-env search-var)) ]
-;;; ) )
 
-; needed to change for question 2-4, not sure if needed to be the same for 1
-(define apply-env
-  (lambda (env search-sym)
-    (cases environment env
-      [empty-env () (eopl:error 'apply-env "No binding for ~s" search-sym)]
-      [extend-env (var val saved-env) (if (eqv? search-sym var)
-                                          val
-                                          (apply-env saved-env search-sym))]
-      [extend-env-rec (p-names b-vars p-bodies saved-env) (let loop ([p-names p-names]
-                                                                     [b-vars b-vars]
-                                                                     [p-bodies p-bodies])
-                                                            (if (null? p-names)
-                                                                (apply-env saved-env search-sym)
-                                                                (if (eqv? search-sym (car p-names))
-                                                                    (proc-val (procedure (car b-vars)
-                                                                                         (car p-bodies)
-                                                                                         env))
-                                                                    
-                                                                    (loop (cdr p-names)
-                                                                          (cdr b-vars)
-                                                                          (cdr p-bodies)))))])))
+
+; write a new version of apply-env that uses the ribcage representation
+; this means that we need to make sure that no bound variables fall off in the recursive case
+(define (apply-env env search-var)
+  (cases environment env
+    [ empty-env ()
+      (error 'apply-env "No binding for ~s" search-var) ]
+    [ extend-env (var val saved-env)
+      (if (eqv? search-var var)
+        val
+        (apply-env saved-env search-var) ) ]
+          [extend-env-rec (p-names b-vars bodies saved-env)
+                            (apply-extend-env-rec
+                             env p-names b-vars bodies saved-env search-var)]))
+
+
+(define apply-extend-env-rec
+  (lambda (env p-names b-vars bodies saved-env search-var)
+    (if (null? p-names)
+        (apply-env saved-env search-var)
+        (if (eqv? search-var (car p-names))
+            (proc-val (procedure (car b-vars) (car bodies) env))
+            (apply-extend-env-rec
+             env
+             (cdr p-names) (cdr b-vars) (cdr bodies) saved-env
+             search-var)))))
+
 (define (extend-env* vars vals env)
   (if (null? vars)
     env
