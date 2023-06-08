@@ -59,11 +59,7 @@
     ;;;;;;;;;;;;; These Variants MUST be changed ;;;;;;;;;;
 
     ; Replace with nameless-var-exp
-    ;;; [ nameless-var-exp (depth)  (apply-nameless-env env depth) ]
-    ; the vars are now a list so thesame issue as let 
-    [ nameless-var-exp (depth)
-    ; we need to get the value of the depth in a  
-      (apply-nameless-env env depth) ]
+    [ nameless-var-exp (depth)  (apply-nameless-env env depth) ]
 
     ; Replace with nameless-let-exp
     ;;; [ nameless-let-exp (exp1 body)  
@@ -72,7 +68,7 @@
     ; the expressions are now a list of expressions
     [ nameless-let-exp (exp1 body)  
       (let ((vals (map (lambda (exp) (value-of exp env)) exp1)))
-        (value-of body (extend-nameless-env vals env) ) ) ]
+        (value-of body (extend-nameless-env-list vals env) ) ) ]
 
 
     ; Replace with nameless-proc-exp  

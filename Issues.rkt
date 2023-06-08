@@ -1,8 +1,5 @@
 
-
-
-; To do
-
+; still having issues with assignment 5 question 2d-e
 
 ; also stuck on assignment 6 question 1
 ; wwwwwwwwwwwe need to chanfge the grammer 

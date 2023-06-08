@@ -27,7 +27,11 @@
 ) )
 
 ;;;;;;;;;;;;;;;; grammatical specification ;;;;;;;;;;;;;;;;
-
+; we want to implement the following grammar:
+; Expression ::= let {Identifier = Expression}∗ in Expression
+; this means we need to change the following aspects of the grammar:
+; change the let clause to include a list of bindings
+; change the nameless-let-exp clause to include a list of bindings
 (define the-grammar
   '(
     [ program (expression) a-program ]
@@ -51,26 +55,28 @@
     ;;; [ expression
     ;;;   ("let" identifier "=" expression "in" expression)
     ;;;   let-exp ]    
+
     [expression ("let" (arbno identifier "=" expression) "in" expression) let-exp]
 
-    ;;; [ expression
-    ;;;   ("proc" "(" identifier ")" expression)
-    ;;;   proc-exp ]   
-    [expression ("proc" "(" (separated-list identifier ",") ")" expression) proc-exp]
 
-    ;;; [ expression
-    ;;;   ("(" expression expression ")")
-    ;;;   call-exp ]
-    [expression ("(" expression (arbno expression) ")") call-exp]
-    
+    [ expression
+      ("proc" "(" identifier ")" expression)
+      proc-exp ]   
+
+    [ expression
+      ("(" expression expression ")")
+      call-exp ]
+
     [ expression
       ("%lexref" number)
       nameless-var-exp ]
     
-    ; this also needs to change because it also needs to get to change an arb no of expressions
-    ;
+    ;;; [ expression
+    ;;;   ("%lexlet" expression "in" expression)
+    ;;;   nameless-let-exp ]
+    ; since let is now a list of bindings, we need to change the grammar
     [ expression
-      ("%lexlet" expression "in" expression)
+      ("%lexlet" (arbno expression) "in" expression)
       nameless-let-exp ]
 
     [ expression

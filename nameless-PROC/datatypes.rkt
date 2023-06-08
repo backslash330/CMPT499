@@ -59,8 +59,7 @@
     [ else value ]
 ) )
 
-;(define (nameless-env? env) ((listof expval?) env))
-(define (nameless-env? env) ((listof (listof expval?)) env))
+(define (nameless-env? env) ((listof expval?) env))
 
 (define-datatype proc proc?
   [ procedure 

@@ -49,20 +49,17 @@
     ;;;      (translation-of named-exp1 senv) 
     ;;;      (translation-of body (extend-senv var senv))) ]
     ; this needs to be changed since let-exp now have multiple vars and multiple expressions
-    ; for example,  (a-program (let-exp '(x) (list (const-exp 5)) (diff-exp (var-exp 'x) (const-exp 2))))
-    ; needs to translated to (nameless-let-exp (const-exp 5) (diff-exp (nameless-var-exp 0) (const-exp 2))))
-    ; likewise when we have multiple vars
-    ; example
-    ; original: (a-program (let-exp '(x y) (list (const-exp 5) (const-exp 3)) (diff-exp (var-exp 'x) (var-exp 'y))))
-    ; output: (nameless-let-exp (list (const-exp 5) (const-exp 3)) (diff-exp (nameless-var-exp 1) (nameless-var-exp 0))))
-    [let-exp (vars exps body)
-      (nameless-let-exp
-        ; the first argument is a list of the translations of each expression in the list
-        (map (lambda (exp) (translation-of exp senv)) exps)
-        ; the second argument is the translation of the body with the static environment extended with the variables
-        (translation-of body (extend-senv* vars senv)))
-      
-    ]
+    ; for example,  (let-exp '(x y) (list (const-exp 5) (const-exp 3)) (diff-exp (var-exp 'x) (var-exp 'y)))
+    ; needs to translated to (nameless-let-exp (list 'x 'y) (list (const-exp 5) (const-exp 3)) (diff-exp (nameless-var-exp 0) (nameless-var-exp 1)))
+    ; should be similar to:
+      ;;; (let*-exp (vars exprs body)
+      ;;;   (let ((vals (map (lambda (expr) (value-of expr env)) exprs)))
+      ;;;     (value-of body (extend-env* vars vals env))))
+
+    [ let-exp (vars named-exps body)
+        (nameless-let-exp
+          (map (lambda (named-exp) (translation-of named-exp senv)) named-exps)
+          (translation-of body (extend-senv* vars senv))) ]
 
     [ else (error 'translation-of "INCORRECT AST") ]
   )
@@ -81,15 +78,6 @@
 
 (define (extend-senv var senv) (cons var senv) )
 
-; extend-senv* takes a list of variables and a static environment
-; and returns a new static environment with the variables added to it
-(define (extend-senv* vars senv)
-  (cond
-    [(null? vars) senv]
-    [else (extend-senv* (cdr vars) (extend-senv (car vars) senv))]
-  )
-)
-
 (define (apply-senv senv var)
   (cond 
     ((null? senv) (error 'apply-senv "NO BINDING FOR VARIABLE"))
@@ -100,3 +88,8 @@
 (define (init-senv)
   (extend-senv 'i (extend-senv 'v (extend-senv 'x (empty-senv))))
 )
+
+(define (extend-senv* vars vals env)
+  (if (null? vars)
+    env
+    (extend-env (car vars) (car vals) (extend-env* (cdr vars) (cdr vals) env))))

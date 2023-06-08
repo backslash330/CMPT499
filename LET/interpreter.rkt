@@ -136,6 +136,7 @@
     ;;;           ]
       (emptylist-exp ()
         (emptylist-val))
+    ; we aren't even getting here, which is weird
       (list-exp (exprs)
         (list-val (map (lambda (expr) (value-of expr env)) exprs)))
 
