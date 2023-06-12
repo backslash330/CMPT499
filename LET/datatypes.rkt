@@ -43,7 +43,7 @@
     [ bool-val (bool) bool ]
     [ num-val (num) num ]
    ; [list-val (lst) (map expval->val lst)]
-    [cons-val (first rest) (cons (expval->val first) (map expval->val rest))]
+    [cons-val (first rest) (cons (expval->val first) (expval->val rest))]
     [emptylist-val () '()]
     [ else value ]
 ) )
@@ -96,7 +96,7 @@
 (cases expval val
   (emptylist-val ()'())
   (cons-val (fisrt rest)
-    (cons (expval->val first) (map expval->val rest))
+    (cons (expval->val first) (expval->val rest))
   )
   (else (error "BAD"))
 ))

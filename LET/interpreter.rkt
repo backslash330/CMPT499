@@ -114,32 +114,36 @@
               (val2 (value-of exp2 env))
               (lst1 (cons val1 val2)))
           (cons-val (car lst1) (cdr lst1))))
-      (car-exp (exp1)
+      ;;; (car-exp (exp1)
+      ;;;   (let ((val1 (value-of exp1 env)))
+      ;;;     (car ((expval->list val1)))))
+    ; change car-exp to be list cons-ex
+    (car-exp (exp1)
         (let ((val1 (value-of exp1 env)))
-          (car ((expval->list val1)))))
-      (cdr-exp (exp1)
-        (let ((val1 (value-of exp1 env)))
-          (expval->cdr val1)))
-      (null?-exp (exp1)
-        (let ((val1 (value-of exp1 env)))
-          (let ((bool1 (expval->emptylist? val1)))
-            (bool-val bool1))))
+          (expval->car val1)))
+    (cdr-exp (exp1)
+      (let ((val1 (value-of exp1 env)))
+        (expval->cdr val1)))
+    (null?-exp (exp1)
+      (let ((val1 (value-of exp1 env)))
+        (let ((bool1 (expval->emptylist? val1)))
+          (bool-val bool1))))
     ;;; [emptylist-exp ()
     ;;;                 (empty-val)
     ;;;                 ]
     
     ;;; ;Question 2c add the list
-    ;;; [list-exp (expressions)
-    ;;;           ; we need to get the value of each expression, so we use map
-    ;;;           (list-value
-    ;;;            (map (lambda (exp) (value-of exp env)) expressions)
-    ;;;            )
-    ;;;           ]
     (emptylist-exp ()
         (emptylist-val))
-    ; we aren't even getting here, which is weird
-      (list-exp (exprs)
-        (expval->list (map (lambda (expr) (value-of expr env)) exprs)))
+    (list-exp (expressions)
+      ; if there is only one expression, then we just return that expression
+        (if (null? (cdr expressions))
+          (value-of (car expressions) env)
+          (let* ((val1 (value-of (car expressions) env))
+                (val2 (value-of (list-exp (cdr expressions)) env))
+                (lst1 (cons val1 val2)))
+            (cons-val (car lst1) (cdr lst1)))
+        ))
 
   (let*-exp (vars exprs body)
         (let ((vals (map (lambda (expr) (value-of expr env)) exprs)))
