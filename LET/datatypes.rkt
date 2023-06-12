@@ -28,6 +28,7 @@
   (emptylist-val)
   (cons-val
     (first expval?)
+    ; need to confirm this is a list
     (rest expval?))
   
 )
@@ -42,6 +43,8 @@
     [ bool-val (bool) bool ]
     [ num-val (num) num ]
    ; [list-val (lst) (map expval->val lst)]
+    [cons-val (first rest) (cons (expval->val first) (map expval->val rest))]
+    [emptylist-val () '()]
     [ else value ]
 ) )
 
@@ -82,8 +85,18 @@
     (else (error 'expval->empty? "~a is not a list!" (expval->val value)))
 ) )
 ; expval->list : ExpVal -> List
-(define list-val
-  (lambda (elements)
-    (if (null? elements)
-        (emptylist-val)
-        (cons-val (car elements) (list-val (cdr elements))))))
+;;; (define list-val
+;;;   (lambda (elements)
+;;;     (if (null? elements)
+;;;         (emptylist-val)
+;;;         (cons-val (car elements) (list-val (cdr elements))))))
+
+;expval -> list
+(define (expval->list val)
+(cases expval val
+  (emptylist-val ()'())
+  (cons-val (fisrt rest)
+    (cons (expval->val first) (map expval->val rest))
+  )
+  (else (error "BAD"))
+))

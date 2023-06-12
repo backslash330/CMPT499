@@ -109,13 +109,14 @@
     ;;;             (expval->empty? (value-of exp env))
     ;;;             )
     ;;;            ]
-          (cons-exp (exp1 exp2)
-        (let ((val1 (value-of exp1 env))
-              (val2 (value-of exp2 env)))
-          (cons-val val1 val2)))
+    (cons-exp (exp1 exp2)
+        (let* ((val1 (value-of exp1 env))
+              (val2 (value-of exp2 env))
+              (lst1 (cons val1 val2)))
+          (cons-val (car lst1) (cdr lst1))))
       (car-exp (exp1)
         (let ((val1 (value-of exp1 env)))
-          (expval->car val1)))
+          (car ((expval->list val1)))))
       (cdr-exp (exp1)
         (let ((val1 (value-of exp1 env)))
           (expval->cdr val1)))
@@ -134,11 +135,11 @@
     ;;;            (map (lambda (exp) (value-of exp env)) expressions)
     ;;;            )
     ;;;           ]
-      (emptylist-exp ()
+    (emptylist-exp ()
         (emptylist-val))
     ; we aren't even getting here, which is weird
       (list-exp (exprs)
-        (list-val (map (lambda (expr) (value-of expr env)) exprs)))
+        (expval->list (map (lambda (expr) (value-of expr env)) exprs)))
 
   (let*-exp (vars exprs body)
         (let ((vals (map (lambda (expr) (value-of expr env)) exprs)))
