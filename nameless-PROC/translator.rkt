@@ -35,12 +35,26 @@
               (translation-of named-exp2 senv)
               (translation-of named-exp3 senv)) ]
 
-    [ call-exp (named-rator named-rand) 
-      (call-exp (translation-of named-rator senv) 
-                (translation-of named-rand senv) ) ]
-    
-    [ proc-exp (var body)  
-      (nameless-proc-exp (translation-of body (extend-senv var senv))) ]
+    ;;; [ call-exp (named-rator named-rand) 
+    ;;;   (call-exp (translation-of named-rator senv) 
+    ;;;             (translation-of named-rand senv) ) ]
+    ; a call expression now has multiple arguments
+    ; for example, (call-exp (proc-exp (list (var-exp 'x) (var-exp 'y)) (diff-exp (var-exp 'x) (var-exp 'y))) (list (const-exp 5) (const-exp 6)))
+    ; remember we also need to handle nested calls
+    [ call-exp (named-rator named-rands)
+      (call-exp (translation-of named-rator senv)
+                (map (lambda (rand) (translation-of rand senv)) named-rands)
+      )
+    ]
+
+    ;;; [ proc-exp (var body)  
+    ;;;   (nameless-proc-exp (translation-of body (extend-senv var senv))) ]
+    ; this needs to be changed since proc-exp now have multiple vars
+    ; Expression ::= proc ( {Identifier}∗(,) ) Expression
+    ; for example,  (proc (x,y) -(x,y)  5 6)
+    [ proc-exp (vars body)  
+      (nameless-proc-exp (translation-of body (extend-senv* vars senv)))]
+
 
     [ var-exp (var) (nameless-var-exp (apply-senv senv var)) ]
     

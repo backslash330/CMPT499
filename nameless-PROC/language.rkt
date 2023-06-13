@@ -59,13 +59,22 @@
     [expression ("let" (arbno identifier "=" expression) "in" expression) let-exp]
 
 
+    ;;; [ expression
+    ;;;   ("proc" "(" identifier ")" expression)
+    ;;;   proc-exp ]   
+    ; Expression ::= proc ( {Identifier}∗(,) ) Expression
     [ expression
-      ("proc" "(" identifier ")" expression)
-      proc-exp ]   
+      ("proc" "(" (separated-list identifier ",")  ")" expression)
+      proc-exp ]
 
+    ;;; [ expression
+    ;;;   ("(" expression expression ")")
+    ;;;   call-exp ]
+    ; Expression ::= ( Expression {Expression}∗ )
     [ expression
-      ("(" expression expression ")")
+      ("(" expression (arbno expression) ")")
       call-exp ]
+
 
     [ expression
       ("%lexref" number)
@@ -82,6 +91,10 @@
     [ expression
       ("%lexproc" expression)
       nameless-proc-exp ]
+
+    ;;; [ expression
+    ;;;   ("%lexcall" expression (arbno expression))
+    ;;;   nameless-call-exp ]
 ) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

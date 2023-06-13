@@ -70,10 +70,18 @@
     ;;;   (let ((val1 (value-of exp1 env)))
     ;;;     (value-of body (extend-nameless-env val1 env) ) ) ]   
     ; the expressions are now a list of expressions
-    [ nameless-let-exp (exp1 body)  
-      (let ((vals (map (lambda (exp) (value-of exp env)) exp1)))
-        (value-of body (extend-nameless-env vals env) ) ) ]
-
+    ;;; [ nameless-let-exp (expressions body)  
+    ;;;   (let ((vals (map (lambda (exp) (value-of exp env)) expressions)))
+    ;;;     (value-of body (extend-nameless-env-list vals env) ) ) ]
+      ;;; (map (lambda (exp) (value-of exp (init-nameless-env))) (list (const-exp 5) (const-exp 3)))
+      ;;; (list (num-val 5) (num-val 3))
+      ; vals is turned into a list of expvals
+      ; we then need to use apply-nameless-env to apply that expval to it's appropriate nameless val
+      ; we can do this by using map and apply-nameless-env
+    [ nameless-let-exp (expressions body)  
+      ; we need to reverse the list of expressions so that the first expression is the first in the list
+      (let ((vals (reverse (map (lambda (exp) (value-of exp env)) expressions))))
+        (value-of body (extend-nameless-env-list  vals env) ) ) ]
 
     ; Replace with nameless-proc-exp  
     [ nameless-proc-exp (body)

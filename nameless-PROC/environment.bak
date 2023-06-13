@@ -22,7 +22,7 @@
 ; we need a version of extend-nameless-env that takes a list of values
 ; the env is a list in the form (list (num-val 1) (num-val 5) (num-val 10))
 ; we need to add out values so we get something list (list (num-val 20) (num-val 1) (num-val 5) (num-val 10) )
-(define (extend-nameless-env-list values env) (append values env))
+(define (extend-nameless-env-list values env) (cons values env))
 ;;;;;;;;;;;;;;;;;;; initial environment ;;;;;;;;;;;;;;;;;;;
 
 ;; init-env : () -> Env
