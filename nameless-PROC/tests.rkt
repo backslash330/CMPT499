@@ -76,4 +76,7 @@ in let
     t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
 in let times4 = (fix t4m)
    in (times4 3)") (num-val 12) "y-combinator-1" )
-       
+
+; testcase for Expression ::= proc ( {Identifier}∗(,) ) Expression
+(check-equal? (run "(proc (x,y) -(x,y)  5 6)") (num-val -1) "proc-2-args")
+
