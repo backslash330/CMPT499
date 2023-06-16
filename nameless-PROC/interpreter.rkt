@@ -54,7 +54,9 @@
     [ call-exp (rator rand)
       (apply-procedure 
         (expval->proc (value-of rator env)) 
-        (value-of rand env))]
+        ; rand is now a list of expressions, so we need to map value-of over it
+        ;(value-of rand env))]
+        (map (lambda (exp) (value-of exp env)) rand))]
 
     ;;;;;;;;;;;;; These Variants MUST be changed ;;;;;;;;;;
 
@@ -99,7 +101,10 @@
 (define (apply-procedure proc1 arg) 
   (cases proc proc1
     [procedure (body env)
-      (value-of body (extend-nameless-env arg env))
+      ; we need to reverse the list of arguments so that the first argument is the first in the list
+      (let ((vals (reverse arg)))
+        (value-of body (extend-nameless-env-list vals env)))
+   ;   (value-of body (extend-nameless-env-list arg env))
 ] ) )
 
 
