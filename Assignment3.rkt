@@ -105,13 +105,15 @@
     (stack 'empty-stack?)))
 
 ; Question 3
+
 (define empty-env
-(lambda ()
-  ; need to construct a list
-  ; this is the car
-(list (lambda (search-var)
-(report-no-binding-found search-var))
- (lambda () #t)) ))
+  (lambda ()
+    (list (lambda (search-var)
+            (report-no-binding-found search-var))
+          (lambda ()
+            #t)
+          (lambda (search-var)
+            #f))))
 ; the second 
 
 
@@ -122,8 +124,15 @@
 (if (eqv? search-var saved-var)
 saved-val
 (apply-env saved-env search-var)))
-(lambda ()
-            #f)
+(lambda ()  #f)
+(lambda (search-var)
+(if (eqv? search-var saved-var)
+#t
+(has-binding? saved-env search-var))
+
+            
+            
+            )
 )))
 
 (define apply-env
@@ -140,3 +149,57 @@ saved-val
    ((cadr env))
 )
 
+
+;question 3b
+; implement has-binding?
+(define has-binding?
+  (lambda (env search-var)
+  ((caddr env) search-var)
+))
+
+
+; test cases for has-binding?
+(define env1 (extend-env 'x 1 (empty-env)))
+(define env2 (extend-env 'y 2 env1))
+(define env3 (extend-env 'z 3 env2))
+
+(has-binding? env3 'x) ; should return #t
+(has-binding? env3 'y) ; should return #t
+(has-binding? env3 'z) ; should return #t
+(has-binding? env3 'a) ; should return #f
+
+
+;question 3c
+;;; Extend the environment interface to include the constructor
+;;; extend-env*. This constructor takes a list of variables, a list of values
+;;; of the same length, and an environment, and is specified by:
+;;; (extend-env* ( var0...vark ) ( var0...valk ) ⌈F ⌉ ) = ⌈G⌉,
+;;; where G(var) = 
+;;; vali var = vari
+;;; for 0 ≤ i ≤ k
+;;; F(var) otherwise
+;;; Extend your representation from (b) to include extend-env*. Your
+;;; implementation of must run in constant time, i.e. extend-env* ∈
+;;; O(1). Do so by defining a new constructor and representing the
+;;; environment as a list of three procedures.
+
+(define extend-env*
+  (lambda (vars vals env)
+  (if (null? vars)
+  ; if vars is empty, return env
+  env
+  (extend-env* (cdr vars) (cdr vals) (extend-env (car vars) (car vals) env))
+  )
+))
+
+; test cases for extend-env*
+(define env4 (extend-env* '(x y z) '(1 2 3) (empty-env)))
+(define env5 (extend-env* '(a b c) '(4 5 6) env1))
+(define env6 (extend-env* '(d e f) '(7 8 9) env2))
+
+(apply-env env4 'x) ; should return 1
+(apply-env env4 'y) ; should return 2
+(apply-env env4 'z) ; should return 3
+(apply-env env5 'a) ; should return 4
+(apply-env env5 'b) ; should return 5
+(apply-env env5 'c) ; should return 6
