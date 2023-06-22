@@ -3,18 +3,46 @@
 ;;; 2. Consider the programming language EXPLICIT-REFS2
 ;;; . Write a rules of
 ;;; inference specification for each of the following:
+
+
 ;;; (a) [2 marks] zero? expression
+
+; (value-of exp_1 p s_0)= (val_1, s_1)
+; _____________________________________________________________________________________
+;                                    ((bool-val #t), s_1) if (expval->num val_1) = 0
+; (value-of (zero? exp_1) p s_0) = {
+;                                    ((bool-val #f), s_1) otherwise
 
 
 ;;; (b) [2 marks] call expression
-;;; (c) [2 marks] A begin expression, where a begin expression is defined
-;;; by the following grammar:
-;;; Expression ::= begin Expression { ; Expression }
-;;; ∗ end
-;;; A begin expression may contain one or more subexpressions separated by semicolons. These are evaluated in order and the value of
-;;; the last is returned.
+
+
+; (value-of exp_1 p s_0) = (val_1, s_1)
+; (value-of exp_2 p s_1) = (val_2, s_2)
+; _____________________________________________________________________________________
+; (value-of (call exp_1 exp_2) p s_0) = (val_3, s_3) where (apply-procedure val_1 val_2 s_2) = (val_3, s_3)
+
+
+;;; a call-exp takes a rator and a rand, then it applies the rator to the rand
+
+;; (c) [2 marks] A begin expression 
+
+
+; (value-of exp_1 p s_0) = (val_1, s_1)
+_____________________________________________________________________________________
+; (value-of (begin-exp exp_1 '()) p s_0) = (val_1, s_1) -- this is the base case
+; (value-of (begin-exp exp_1 (cons exp_2 exps)) p s_0) = (value-of (begin-exp exp2 exps) p s_1) -- this is the recursive case
+
+
+
 ;;; (d) [2 marks] list expression (defined in Assignment 5 Question 2e)
 
+
+; (value-of (list-exp '()) p s_0) = (empty-list-val, s_0) 
+; (value-of exp_1 p s_0) = (val_1, s_1)
+; (value-of (list-exp exps) p s_0) = (val_2, s_2)
+; _____________________________________________________________________________________
+; (value-of (list-exp (cons exp_1 exps)) p s_0) = (cons val_1 val_2, s_2)
 
 
 
